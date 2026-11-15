@@ -79,7 +79,7 @@ function Me:OnCommMessage( prefix, packed_message, dist, sender )
 	if not success then return end
 	
 	-- DEBUG: Vemos exactamente qué nombre llega por el canal de comunicación
-	print("|cff00ffff[COMM DEBUG]|r Recibido de: '" .. tostring(sender) .. "' | Type: " .. tostring(msgtype))
+	--print("|cff00ffff[COMM DEBUG]|r Recibido de: '" .. tostring(sender) .. "' | Type: " .. tostring(msgtype))
 
 	-- En Forever, el nombre del remitente puede venir con apellido o con formato especial.
 	-- Primero, limpiamos el reino si existe (formato "Nombre-Reino").
