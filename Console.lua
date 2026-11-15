@@ -24,23 +24,33 @@ function SlashCmdList.DICE( msg, EditBox )
 	
 	if msg == "" then
 		Me.PrintMessage("/dice (rollType or XDY[+/-]Z)", "SYSTEM");
-		-- >>> l10n esES
 		Me.PrintMessage( L["- X is how many dice to roll."], "SYSTEM");
 		Me.PrintMessage( L["- Y is how many sides those dice have."], "SYSTEM");
 		Me.PrintMessage( L["- Z is how much you add/subtract from the total after adding up all the dice."], "SYSTEM");
 		return
 	end
 
-	local dice = DiceMasterPanelDice:GetText()
+	-- Valor por defecto seguro
+	local dice = "1d20" 
+	
+	-- Comprobamos si el panel de dados existe antes de leerlo
+	local panelText = DiceMasterPanelDice and DiceMasterPanelDice:GetText()
+	
 	if string.find( msg:lower(), "(%d*)[dD](%d+)([+-]?)(%d*)" ) then
 		dice = msg:lower()
+	elseif panelText and panelText ~= "" then
+		dice = panelText
 	end
 	
 	local rollType, modifier;
 	for i = 1, #Profile.skills do
 		if Profile.skills[i].name:lower() == msg:lower() then
-			modifier = Me.GetModifiersFromSkillGUID( Profile.skills[i].guid, true );
-			rollType = Profile.skills[i].name;
+			-- Llamada segura para Forever
+			local success, mod = pcall(Me.GetModifiersFromSkillGUID, Me, Profile.skills[i].guid, true)
+			if success and mod then
+				modifier = mod
+				rollType = Profile.skills[i].name;
+			end
 			break
 		end
 	end
