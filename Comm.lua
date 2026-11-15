@@ -189,3 +189,26 @@ end
 function Me.Comm_Init() 
 	Me:RegisterComm( "DCM4", "OnCommMessage" ) 
 end
+
+-- Función segura para enviar mensajes en Forever
+function Me.SafeSendComm(msgtype, data, target, priority)
+	local dist = "PARTY"
+	if IsInRaid() then
+		dist = "RAID"
+	elseif not IsInGroup() then
+		-- Si no estamos en grupo, no enviamos nada (o lo enviamos por WHISPER si hay target)
+		if target then
+			dist = "WHISPER"
+		else
+			return -- No hay a quién enviar
+		end
+	end
+	
+	local msg = Me:Serialize(msgtype, data)
+	local channel = dist
+	if dist == "WHISPER" then
+		C_ChatInfo.SendAddonMessage("DCM4", msg, channel, target)
+	else
+		C_ChatInfo.SendAddonMessage("DCM4", msg, channel)
+	end
+end
